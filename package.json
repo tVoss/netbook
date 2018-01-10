@@ -1,0 +1,24 @@
+{
+  "name": "netbook",
+  "version": "1.0.0",
+  "description": "Algorithm intuition builder",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tVoss/netbook.git"
+  },
+  "author": "Tyler Voss <tVoss42@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tVoss/netbook/issues"
+  },
+  "homepage": "https://github.com/tVoss/netbook#readme",
+  "devDependencies": {
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.1"
+  }
+}
