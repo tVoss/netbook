@@ -18,7 +18,7 @@ export default class Entity {
     }
 
     translate({dx, dy}) {
-        posX += dx;
-        posY += dy;
+        this.posX += dx;
+        this.posY += dy;
     }
 }

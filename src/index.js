@@ -1,28 +1,55 @@
-import { Entity } from './entities';
+import { Node } from './entities';
+import { Mouse } from './util'
 
 const canvas = document.getElementById('graphsCanvas');
 const ctx = canvas.getContext('2d');
 const canvasRect = canvas.getBoundingClientRect();
 
 // Because the internet
-ctx.translate(-canvasRect.left, -canvasRect.top);
+ctx.translate(-canvasRect.left - 2, -canvasRect.top - 2);
 
-let mouseX = 0;
-let mouseY = 0;
-let mouseDx = 0;
-let mouseDy = 0;
-let mouseDown = false;
-let mouseDist = 0;
+const mouse = new Mouse(canvas)
+
 let mouseInCircle = false;
-
-let circleX = 100;
-let circleY = 100;
 let circleGrabbed = false;
 
-const node = new Node(100, 100, 50);
+const nodes = [
+    new Node(100, 100, 50),
+    new Node(200, 200, 60)
+];
+
+let grabbedNode = null;
 
 function main() {
+    update();
     redraw();
+    requestAnimationFrame(main);
+}
+
+function update() {
+    let hitNode;
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].containsPoint(mouse.position)) {
+            hitNode = nodes[i];
+            break;
+        }
+    }
+
+    canvas.style.cursor = hitNode ? 'pointer' : 'auto'
+
+    if (mouse.wasPressed && hitNode) {
+        grabbedNode = hitNode;
+    }
+
+    if (mouse.wasReleased) {
+        grabbedNode = null;
+    }
+
+    if (grabbedNode) {
+        grabbedNode.translate(mouse.delta)
+    }
+
+    mouse.reset();
 }
 
 function redraw() {
@@ -31,51 +58,21 @@ function redraw() {
     ctx.fillRect(0, 0, 1000, 1000);
     ctx.fillStyle = 'black';
 
-    node.draw(ctx)
+    nodes.forEach(node => node.draw(ctx))
+    drawLaser()
 }
 
 function drawLaser() {
+    const { x, y } = mouse.position;
     ctx.beginPath();
-    ctx.moveTo(mouseX, 0);
-    ctx.lineTo(mouseX, 1000);
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 1000);
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.moveTo(0, mouseY);
-    ctx.lineTo(1000, mouseY);
+    ctx.moveTo(0, y);
+    ctx.lineTo(1000, y);
     ctx.stroke();
-}
-
-canvas.onmousedown = function(e) {
-    mouseDown = true;
-
-    circleGrabbed = mouseInCircle;
-}
-
-canvas.onmouseup = function(e) {
-    mouseDown = false;
-
-    circleGrabbed = false;
-}
-
-canvas.onmousemove = function(e) {
-    mouseDx = e.clientX - mouseX;
-    mouseDy = e.clientY - mouseY;
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    const dx = Math.pow(mouseX - circleX, 2);
-    const dy = Math.pow(mouseY - circleY, 2);
-    mouseDist = Math.sqrt(dx + dy);
-    mouseInCircle = mouseDist < 50;
-
-    canvas.style.cursor = mouseInCircle ? 'pointer' : 'auto'
-
-    if (circleGrabbed) {
-        circleX += mouseDx;
-        circleY += mouseDy;
-        requestAnimationFrame(redraw);
-    }
 }
 
 main();

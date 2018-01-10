@@ -1,5 +1,7 @@
-import Entity from  './entity'
+import Entity from './entity'
+import Node from './node'
 
 export {
-    Entity
+    Entity,
+    Node
 }
