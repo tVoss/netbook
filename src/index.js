@@ -9,7 +9,22 @@ let fullyConnected = false;
 let grabbedNode = null;
 
 const n = Math.floor(Math.random() * 9) + 3;
-const graph = new Graph(n, 50);
+const matrix = [
+    [2, 1, 0, 0, 1, 0],
+    [1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 0],
+    [0, 0, 1, 0, 1, 1],
+    [1, 1, 0, 1, 0, 0],
+    [0, 0, 0, 1, 0, 0],
+]
+const matrix2 = [
+    [0, 0, 1, 0],
+    [1, 0, 0, 0],
+    [0, 0, 0, 1],
+    [0, 1, 0, 0]
+]
+const graph = Graph.fromMatrix(matrix2, true);
+console.log(JSON.stringify(graph.matrix))
 graph.arrangeInCircle(200, { x: 50, y: 50 })
 
 function main() {
@@ -24,10 +39,6 @@ function update() {
 
     if (mouse.wasPressed) {
         grabbedNode = overNode;
-        if (!fullyConnected) {
-            graph.fullyConnect(true)
-            fullyConnected = true;
-        }
     }
 
     if (mouse.wasReleased) {

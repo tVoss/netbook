@@ -17,6 +17,22 @@ export default class Graph {
         }
     }
 
+    static fromMatrix(matrix, directed) {
+        const graph = new Graph(matrix.length, 50);
+
+        for (let i = 0; i < matrix.length; i++) {
+            for (let j = directed ? 0 : i; j < matrix.length; j++) {
+                const val = matrix[i][j];
+                const delta = i === j ? 2 : 1;
+                for (let k = 0; k < val; k += delta) {
+                    graph.addEdge(graph.nodes[i], graph.nodes[j], directed)
+                }
+            }
+        }
+
+        return graph;
+    }
+
     draw(ctx) {
         this.edges.forEach(e => e.draw(ctx))
         this.nodes.forEach(n => n.draw(ctx))
@@ -39,7 +55,7 @@ export default class Graph {
         }
 
         this.matrix[index1][index2] += 1;
-        if (!directed) {
+        if (!directed || index1 === index2) {
             this.matrix[index2][index1] += 1;
         }
         this.edges.push(new Edge(node1, node2, directed))
