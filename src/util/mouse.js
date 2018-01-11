@@ -4,6 +4,8 @@ export default class Mouse {
         canvas.addEventListener('mouseup', this._onMouseUp.bind(this));
         canvas.addEventListener('mousemove', this._onMouseMove.bind(this));
 
+        this._offsetRect = canvas.getBoundingClientRect();
+
         this.position = {
             x: 0,
             y: 0
@@ -24,14 +26,16 @@ export default class Mouse {
     }
 
     _onMouseMove(e) {
+        const newPos = {
+            x: e.clientX - this._offsetRect.left,
+            y: e.clientY - this._offsetRect.top
+        }
+
         this.delta = {
-            dx: this.delta.dx + e.clientX - this.position.x,
-            dy: this.delta.dy + e.clientY - this.position.y
+            dx: this.delta.dx + newPos.x - this.position.x,
+            dy: this.delta.dy + newPos.y - this.position.y
         }
-        this.position = {
-            x: e.clientX,
-            y: e.clientY
-        }
+        this.position = newPos;
     }
 
     reset() {

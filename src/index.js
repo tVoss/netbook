@@ -1,24 +1,16 @@
-import { Node } from './entities';
+import { Node, Graph } from './entities';
 import { Mouse } from './util'
 
 const canvas = document.getElementById('graphsCanvas');
 const ctx = canvas.getContext('2d');
-const canvasRect = canvas.getBoundingClientRect();
-
-// Because the internet
-ctx.translate(-canvasRect.left - 2, -canvasRect.top - 2);
-
 const mouse = new Mouse(canvas)
 
-let mouseInCircle = false;
-let circleGrabbed = false;
-
-const nodes = [
-    new Node(100, 100, 50),
-    new Node(200, 200, 60)
-];
-
+let fullyConnected = false;
 let grabbedNode = null;
+
+const n = Math.floor(Math.random() * 9) + 3;
+const graph = new Graph(n, 50);
+graph.arrangeInCircle(200, { x: 50, y: 50 })
 
 function main() {
     update();
@@ -27,18 +19,15 @@ function main() {
 }
 
 function update() {
-    let hitNode;
-    for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].containsPoint(mouse.position)) {
-            hitNode = nodes[i];
-            break;
+    const overNode = graph.grab(mouse.position);
+    canvas.style.cursor = overNode ? 'pointer' : 'auto'    
+
+    if (mouse.wasPressed) {
+        grabbedNode = overNode;
+        if (!fullyConnected) {
+            graph.fullyConnect(true)
+            fullyConnected = true;
         }
-    }
-
-    canvas.style.cursor = hitNode ? 'pointer' : 'auto'
-
-    if (mouse.wasPressed && hitNode) {
-        grabbedNode = hitNode;
     }
 
     if (mouse.wasReleased) {
@@ -58,8 +47,7 @@ function redraw() {
     ctx.fillRect(0, 0, 1000, 1000);
     ctx.fillStyle = 'black';
 
-    nodes.forEach(node => node.draw(ctx))
-    drawLaser()
+    graph.draw(ctx)
 }
 
 function drawLaser() {
