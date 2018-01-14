@@ -1,13 +1,15 @@
 import Node from './node'
 
 export default class Edge {
-    constructor(start, end, directed = false) {
+    constructor(start, end, directed = false, color = 'black') {
         this.start = start;
         this.end = end;
         this.directed = directed;
     }
 
     draw(ctx) {
+        ctx.fillStyle = 'red'
+        ctx.strokeStyle = 'green'
         ctx.beginPath();
         ctx.moveTo(this.start.position.x, this.start.position.y);
         ctx.lineTo(this.end.position.x, this.end.position.y);
@@ -30,21 +32,21 @@ export default class Edge {
             y: delta.y / magnitude
         }
         const center = {
-            x: start.position.x + delta.x * 3 / 4,
-            y: start.position.y + delta.y * 3 / 4
+            x: start.position.x + delta.x * 3 / 5,
+            y: start.position.y + delta.y * 3 / 5
         }
         const tip = {
-            x: center.x + norm.x * 20,
-            y: center.y + norm.y * 20
+            x: center.x + norm.x * 10,
+            y: center.y + norm.y * 10
         }
         const tail1 = {
-            x: center.x - norm.x * 20 + norm.y * 5,
-            y: center.y - norm.y * 20 - norm.x * 5
+            x: center.x - norm.x * 10 + norm.y * 5,
+            y: center.y - norm.y * 10 - norm.x * 5
         }
 
         const tail2 = {
-            x: center.x - norm.x * 20 - norm.y * 5,
-            y: center.y - norm.y * 20 + norm.x * 5,
+            x: center.x - norm.x * 10 - norm.y * 5,
+            y: center.y - norm.y * 10 + norm.x * 5,
         }
 
         ctx.moveTo(tip.x, tip.y);

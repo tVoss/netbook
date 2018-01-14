@@ -23,9 +23,10 @@ const matrix2 = [
     [0, 0, 0, 1],
     [0, 1, 0, 0]
 ]
-const graph = Graph.fromMatrix(matrix2, true);
-console.log(JSON.stringify(graph.matrix))
+const graph = new Graph(7, 50)
 graph.arrangeInCircle(200, { x: 50, y: 50 })
+graph.fullyConnect(true)
+graph.nodes.forEach(console.log)
 
 function main() {
     update();

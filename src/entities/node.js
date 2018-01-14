@@ -3,6 +3,25 @@ export default class Node {
         this.position = { x, y }
         this.radius = r;
         this.radius2 = r * r;
+
+        this.inEdges = [];
+        this.outEdges = [];
+    }
+
+    addInEdge(edge) {
+        this.inEdges.push(edge);
+    }
+
+    removeInEdge(edge) { 
+        this.inEdges = this.inEdges.filter(e => e !== edge)
+    }
+
+    addOutEdge(edge) {
+        this.outEdges.push(edge);
+    }
+
+    removeOutEdge(edge) {
+        this.outEdges = this.outEdges.filter(e => e !== edge)
     }
 
     draw(ctx) {
@@ -10,7 +29,7 @@ export default class Node {
 
         ctx.beginPath();
         ctx.arc(x, y, this.radius, 0, 2*Math.PI);
-        ctx.stroke();
+        ctx.fill();
     }
 
     containsPoint({x, y}) {

@@ -46,19 +46,28 @@ export default class Graph {
         }
     }
 
-    addEdge(node1, node2, directed = false) {
-        const index1 = this.nodes.indexOf(node1);
-        const index2 = this.nodes.indexOf(node2)
+    addEdge(start, end, directed = false) {
+        const startIndex = this.nodes.indexOf(start);
+        const endIndex = this.nodes.indexOf(end)
 
-        if (index1 < 0 || index2 < 0) {
+        if (startIndex < 0 || endIndex < 0) {
             throw new ReferenceError("Nodes are not a part of this graph");
         }
 
-        this.matrix[index1][index2] += 1;
-        if (!directed || index1 === index2) {
-            this.matrix[index2][index1] += 1;
+        const edge = new Edge(start, end, directed);
+        start.addOutEdge(edge);
+        end.addInEdge(edge);
+        if (!directed) {
+            start.addInEdge(edge);
+            end.addOutEdge(edge);
         }
-        this.edges.push(new Edge(node1, node2, directed))
+
+        this.matrix[startIndex][endIndex] += 1;
+        if (!directed || startIndex === endIndex) {
+            this.matrix[endIndex][startIndex] += 1;
+        }
+
+        this.edges.push(edge)
     }
 
     fullyConnect(directed = false) {
