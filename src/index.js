@@ -1,4 +1,4 @@
-import { Node, Graph } from './entities';
+import { DFA, Node, Graph } from './entities';
 import { Mouse } from './util'
 
 const canvas = document.getElementById('graphsCanvas');
@@ -7,26 +7,33 @@ const mouse = new Mouse(canvas)
 
 let fullyConnected = false;
 let grabbedNode = null;
+let hoveredNode = null;
 
-const n = Math.floor(Math.random() * 9) + 3;
-const matrix = [
-    [2, 1, 0, 0, 1, 0],
-    [1, 0, 1, 0, 1, 0],
-    [0, 1, 0, 1, 0, 0],
-    [0, 0, 1, 0, 1, 1],
-    [1, 1, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0],
-]
-const matrix2 = [
-    [0, 0, 1, 0],
-    [1, 0, 0, 0],
-    [0, 0, 0, 1],
-    [0, 1, 0, 0]
-]
-const graph = new Graph(7, 50)
-graph.arrangeInCircle(200, { x: 50, y: 50 })
-graph.fullyConnect(true)
-graph.nodes.forEach(console.log)
+const Q = ['a', 'b', 'c', 'd', 'e'];
+const Sigma = [ '0', '1', ]
+const delta = {
+    'a': {
+        '0': 'b',
+        '1': 'a'
+    },
+    'b': {
+        '0': 'b',
+        '1': 'd'
+    },
+    'c': {
+        '0': 'd',
+        '1': 'e',
+    },
+    'd': {
+        '0': 'b',
+        '1': 'e'
+    },
+    'e': {
+        '0': 'e',
+        '1': 'd'
+    }
+}
+let dfa = new DFA(Q, Sigma, delta, 'a', ['e'])
 
 function main() {
     update();
@@ -35,11 +42,11 @@ function main() {
 }
 
 function update() {
-    const overNode = graph.grab(mouse.position);
-    canvas.style.cursor = overNode ? 'pointer' : 'auto'    
+    hoveredNode = dfa.graph.grab(mouse.position);
+    canvas.style.cursor = hoveredNode ? 'pointer' : 'auto'    
 
     if (mouse.wasPressed) {
-        grabbedNode = overNode;
+        grabbedNode = hoveredNode;
     }
 
     if (mouse.wasReleased) {
@@ -55,11 +62,10 @@ function update() {
 
 function redraw() {
     // Clear screen
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, 1000, 1000);
     ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, 1000, 1000);
 
-    graph.draw(ctx)
+    dfa.draw(ctx);
 }
 
 function drawLaser() {

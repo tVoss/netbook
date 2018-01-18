@@ -27,8 +27,8 @@ export default class Mouse {
 
     _onMouseMove(e) {
         const newPos = {
-            x: e.clientX - this._offsetRect.left,
-            y: e.clientY - this._offsetRect.top
+            x: e.offsetX,
+            y: e.offsetY
         }
 
         this.delta = {
